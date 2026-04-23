@@ -41,3 +41,18 @@ jobs:
 
             - name: Build VSCode extension
               run: npm run package
+
+            - name: Get package version
+              id: version
+              run: echo "version=$(node -p \"require('./package.json').version\")" >> $GITHUB_OUTPUT
+
+            - name: Package VSIX
+              run: npx vsce package --allow-package-secrets sendgrid --out "cline-${{ steps.version.outputs.version }}.vsix"
+
+            - name: Upload VSIX artifact
+              uses: actions/upload-artifact@v4
+              with:
+                  name: cline-vsix-${{ steps.version.outputs.version }}
+                  path: cline-${{ steps.version.outputs.version }}.vsix
+                  if-no-files-found: error
+                  retention-days: 30
