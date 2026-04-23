@@ -18,6 +18,7 @@ permissions:
 
 jobs:
     quality-checks:
+        if: github.repository == 'cline/cline'
         runs-on: ubuntu-latest
         name: Quality Checks
         steps:
@@ -45,6 +46,7 @@ jobs:
               run: npm run ci:check-all
 
     test:
+        if: github.repository == 'cline/cline'
         needs: quality-checks
         env:
             VSCODE_TEST_VERSION: 1.103.0
@@ -154,6 +156,7 @@ jobs:
                       webview-ui/coverage/lcov.info
 
     test-platform-integration:
+        if: github.repository == 'cline/cline'
         needs: quality-checks
         runs-on: ubuntu-latest
         steps:
@@ -199,8 +202,9 @@ jobs:
 
     qlty:
         needs: [test, test-platform-integration]
+        if: github.repository == 'cline/cline'
         runs-on: ubuntu-latest
-        # Run on PRs to main, pushes to main, and manual dispatches
+        # Only publish coverage from the canonical repo where Qlty secrets exist.
         steps:
             - name: Checkout code
               uses: actions/checkout@v4
